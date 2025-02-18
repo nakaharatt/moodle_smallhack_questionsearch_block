@@ -1,0 +1,2 @@
+# moodle_smallhack_questionsearch_block
+Moodleの問題バンクにおいてHTMLブロックを利用したJavaScriptによる問題検索機能の追加
