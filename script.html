@@ -1,0 +1,80 @@
+<script>
+    function filterTable() {
+        // 入力された検索文字列を取得
+        const searchText = document.getElementById('searchText').value;
+
+        // idがcategoryquestionsのtable内のtrをフィルタリング
+        const table = document.getElementById('categoryquestions');
+        const rows = table.getElementsByTagName('tr');
+
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+
+            // thead内の行は除外
+            if (row.closest('thead')) continue;
+
+            // 検索対象のクラスを持つtdを取得
+            const targetClasses = ['qnameidnumbertags', 'questionversionnumber', 'creatorname', 'modifiername', 'questiontext'];
+            let matchFound = false;
+
+            for (let className of targetClasses) {
+                const td = row.querySelector(`td.${className}`);
+                if (td && td.textContent.includes(searchText)) {
+                    matchFound = true;
+                    break;
+                }
+            }
+
+            if (matchFound) {
+                row.style.display = '';
+                // 表示された行のチェックボックスを有効化し、前回の検索で非表示になったもののみチェックを外す
+                const checkboxes = row.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    if (checkbox.disabled) {
+                        checkbox.disabled = false;
+                        checkbox.checked = false;
+                    }
+                });
+
+                if (row.querySelector('td.questiontext') && row.previousElementSibling) {
+                    row.previousElementSibling.style.display = '';
+                }
+                if (i < rows.length - 1) {
+                    const nextRow = rows[i + 1];
+                    const nextRowHasQuestionText = nextRow.querySelector('td.questiontext');
+                    if (nextRowHasQuestionText) {
+                        nextRow.style.display = '';
+                        i++; // 次の行をスキップ
+                    }
+                }
+            } else {
+                row.style.display = 'none';
+                // 非表示にする行のチェックボックスを無効化
+                const checkboxes = row.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(checkbox => {
+                    checkbox.disabled = true;
+                });
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // クラス名 'show-all-questions' を持つ要素を取得
+        const showAllQuestionsLink = document.querySelector('.show-all-questions');
+
+        // クリックイベントを追加
+        showAllQuestionsLink.addEventListener('click', function(event) {
+            event.preventDefault(); // デフォルトのリンク動作を無効化
+            smallhack_showAllQuestions();
+        });
+
+        // フィルターボタンのクリックイベントを追加
+        const filterButton = document.getElementById('filterButton');
+        filterButton.addEventListener('click', function(event) {
+            event.preventDefault(); // デフォルトのボタン動作を無効化
+            filterTable();
+        });
+    });
+</script>
+<p><a class="show-all-questions" href="#">すべて表示</a></p>
+<form><input id="searchText" class="form-control" type="text" placeholder="検索文字を入力"> <button id="filterButton" class="btn btn-primary">検索</button></form>
