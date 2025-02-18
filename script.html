@@ -1,4 +1,17 @@
 <script>
+    function smallhack_showAllQuestions() {
+        // 現在のURLを取得
+        let currentUrl = new URL(window.location.href);
+
+        // qperpage パラメータを削除
+        currentUrl.searchParams.delete('qperpage');
+
+        // 新しいパラメータを追加
+        currentUrl.searchParams.append('qperpage', '4000');
+
+        // 新しいURLにリダイレクト
+        window.location.href = currentUrl.toString();
+    }
     function filterTable() {
         // 入力された検索文字列を取得
         const searchText = document.getElementById('searchText').value;
